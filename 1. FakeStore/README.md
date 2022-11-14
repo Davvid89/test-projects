@@ -17,7 +17,7 @@ and only this process will be covered by the requirements below. We will skip th
 - User has the option to change the quantity of the selected tour (single position) on the shopping cart page,
 - User has the option of deleting a tour on the shopping cart page (entire position),
 
-### >PaymentTest
+### PaymentTest
 - User is informed of errors in the form on the payment page through appropriate messages,
 - User has the possibility to log in to the payment page and make a payment as a logged user,
 - User has the option to create an account on the payment page and make a payment at the same time,
