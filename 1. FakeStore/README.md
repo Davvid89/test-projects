@@ -8,7 +8,7 @@ and only this process will be covered by the requirements below. We will skip th
 **Below is a list of actions we want to verify with regression tests:**
 
 
-### TestCarts
+### TestSeleniumJava.TestCarts 
 - User has the option to add the selected tour to the shopping cart from that tour's page,
 - User has the option to add the selected tour to the basket from the category page,
 - User has the option to add at least 10 tours to the basket (in total and in any combination),
@@ -17,7 +17,7 @@ and only this process will be covered by the requirements below. We will skip th
 - User has the option to change the quantity of the selected tour (single position) on the shopping cart page,
 - User has the option of deleting a tour on the shopping cart page (entire position),
 
-### PaymentTest
+### TestSeleniumJava.PaymentTests
 - User is informed of errors in the form on the payment page through appropriate messages,
 - User has the possibility to log in to the payment page and make a payment as a logged user,
 - User has the option to create an account on the payment page and make a payment at the same time,
