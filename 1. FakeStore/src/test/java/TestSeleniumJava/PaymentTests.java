@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Calendar;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentTests {
@@ -46,7 +47,7 @@ public class PaymentTests {
 
 
     @BeforeEach
-    public void testSetUp(){
+    public void testSetUp() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
@@ -59,7 +60,7 @@ public class PaymentTests {
     }
 
     @Test
-    public void buyWithoutAccountTest(){
+    public void buyWithoutAccountTest() {
         addProductAndViewCart("https://fakestore.testelka.pl/product/egipt-el-gouna/");
         driver.findElement(checkoutButton).click();
         fillOutCheckoutForm("mijiyen148@pamaweb.com");
@@ -72,7 +73,7 @@ public class PaymentTests {
     }
 
     @Test
-    public void buyWithNewAccountTest(){
+    public void buyWithNewAccountTest() {
         addProductAndViewCart("https://fakestore.testelka.pl/product/egipt-el-gouna/");
         driver.findElement(checkoutButton).click();
         fillOutCheckoutForm("mijiyen148@pamaweb.com");
@@ -96,7 +97,7 @@ public class PaymentTests {
     }
 
     @Test
-    public void orderSummaryTest(){
+    public void orderSummaryTest() {
         addProductAndViewCart("https://fakestore.testelka.pl/product/egipt-el-gouna/");
         driver.findElement(checkoutButton).click();
 
@@ -119,30 +120,30 @@ public class PaymentTests {
         String expectedProductName = "Egipt - El Gouna";
 
         assertAll(
-                ()->assertTrue(orderNumber>0, "Order number is not bigger than 0"),
-                ()->assertEquals(currentDate, dateFromSummary,
+                () -> assertTrue(orderNumber > 0, "Order number is not bigger than 0"),
+                () -> assertEquals(currentDate, dateFromSummary,
                         "Date on the summary is not correct. Expected: " +
                                 currentDate + " but was: " + dateFromSummary),
-                ()->assertEquals( expectedPrice, actualPrice,
+                () -> assertEquals(expectedPrice, actualPrice,
                         "Price in summary is not correct. Expected: " + expectedPrice +
                                 " but was: " + actualPrice),
-                ()->assertEquals(expectedPaymentMethod, actualPaymentMethod,
+                () -> assertEquals(expectedPaymentMethod, actualPaymentMethod,
                         "Payment method in summary is not correct. Expected: " + expectedPaymentMethod +
-                                " but was: " + actualPaymentMethod)   ,
-                ()->assertEquals(expectedNumberOfProducts, actualNumberOfProducts,
+                                " but was: " + actualPaymentMethod),
+                () -> assertEquals(expectedNumberOfProducts, actualNumberOfProducts,
                         "Number of products in summary is not correct. Expected: " + expectedNumberOfProducts +
                                 " but was: " + actualNumberOfProducts),
-                ()->assertEquals(expectedProductQuantity, actualProductQuantity,
+                () -> assertEquals(expectedProductQuantity, actualProductQuantity,
                         "Product quantity in summary is not correct. Expected: " + expectedProductQuantity +
                                 " but was: " + actualProductQuantity),
-                ()->assertEquals(expectedProductName, actualProductName,
+                () -> assertEquals(expectedProductName, actualProductName,
                         "Product name is not correct. Expected: " + expectedProductName +
                                 " but was: " + actualProductName)
         );
     }
 
     @Test
-    public void buyWithExistingAccountTest(){
+    public void buyWithExistingAccountTest() {
         By wrappedLoginView = By.cssSelector(".login[style='display: none;']");
         By usernameField = By.cssSelector("#username");
         By passwordField = By.cssSelector("#password");
@@ -165,37 +166,38 @@ public class PaymentTests {
         goToMyAccountOrders();
 
         int numberOfOrdersWithGivenNumber = driver.findElements(By.xpath("//a[contains(text(), '#" + orderNumber + "')]")).size();
-        assertTrue(numberOfOrdersWithGivenNumber==1,
+        assertTrue(numberOfOrdersWithGivenNumber == 1,
                 "Expected one order with a given number (" + orderNumber + ") but found " + numberOfOrdersWithGivenNumber + " orders.");
     }
 
     @Test
-    public void obligatoryFieldsValidationMessageTest(){
+    public void obligatoryFieldsValidationMessageTest() {
         addProductAndViewCart("https://fakestore.testelka.pl/product/egipt-el-gouna/");
         driver.findElement(checkoutButton).click();
         fillOutCardData(false);
         String errorMessage = orderAndWaitForErrorMessage();
         assertAll(
-                ()->assertTrue(errorMessage.contains("Imię płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Imię płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of first name error."),
-                ()->assertTrue(errorMessage.contains("Nazwisko płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Nazwisko płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of last name error."),
-                ()->assertTrue(errorMessage.contains("Ulica płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Ulica płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of street name error."),
-                ()->assertTrue(errorMessage.contains("Miasto płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Miasto płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of city name error."),
-                ()->assertTrue(errorMessage.contains("Telefon płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Telefon płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of phone number error."),
-                ()->assertTrue(errorMessage.contains("Adres email płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Adres email płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of email address error."),
-                ()->assertTrue(errorMessage.contains("Kod pocztowy płatności jest wymaganym polem."),
+                () -> assertTrue(errorMessage.contains("Kod pocztowy płatności jest wymaganym polem."),
                         "Error message doesn't contain lack of postal code error."),
-                ()->assertTrue(errorMessage.contains("Proszę przeczytać i zaakceptować regulamin sklepu aby móc sfinalizować zamówienie"),
+                () -> assertTrue(errorMessage.contains("Proszę przeczytać i zaakceptować regulamin sklepu aby móc sfinalizować zamówienie"),
                         "Error message doesn't contain lack of terms acceptance error.")
         );
     }
+
     @Test
-    public void phoneWrongFormatTest(){
+    public void phoneWrongFormatTest() {
         addProductAndViewCart("https://fakestore.testelka.pl/product/egipt-el-gouna/");
         driver.findElement(checkoutButton).click();
         fillOutCheckoutForm("mijiyen148@pamaweb.com", "phone number");
@@ -206,25 +208,27 @@ public class PaymentTests {
     }
 
     @AfterEach
-    public void closeDriver(){
+    public void closeDriver() {
         driver.quit();
     }
 
-    private void addProductAndViewCart(String productPageUrl){
+    private void addProductAndViewCart(String productPageUrl) {
         addProductToCart(productPageUrl);
         viewCart();
     }
+
     private void addProductToCart() {
         WebElement addToCartButton = driver.findElement(productPageAddToCartButton);
         addToCartButton.click();
         wait.until(ExpectedConditions.elementToBeClickable(productPageViewCartButton));
     }
 
-    private void addProductToCart(String productPageUrl){
+    private void addProductToCart(String productPageUrl) {
         driver.navigate().to(productPageUrl);
         addProductToCart();
     }
-    private void viewCart(){
+
+    private void viewCart() {
         wait.until(ExpectedConditions.elementToBeClickable(productPageViewCartButton)).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".shop_table")));
     }
@@ -234,46 +238,51 @@ public class PaymentTests {
             element.sendKeys(Character.toString(text.charAt(i)));
         }
     }
-    private WebElement findElementInFrame(By frameLocator, By elementLocator){
+
+    private WebElement findElementInFrame(By frameLocator, By elementLocator) {
         driver.switchTo().defaultContent();
         wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameLocator));
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(elementLocator));
         return element;
     }
-    private String getCurrentDate(){
+
+    private String getCurrentDate() {
         Calendar date = Calendar.getInstance();
         String fullDate = getPolishMonth(date.get(Calendar.MONTH)) + " " +
                 date.get(Calendar.DAY_OF_MONTH) + ", " + date.get(Calendar.YEAR);
         return fullDate;
     }
-    private String orderAndWaitToComplete(){
+
+    private String orderAndWaitToComplete() {
         driver.findElement(orderButton).click();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(ExpectedConditions.urlContains("/zamowienie/zamowienie-otrzymane/"));
         return wait.until(ExpectedConditions.presenceOfElementLocated(summaryOrderNumber)).getText();
     }
-    private String orderAndWaitForErrorMessage(){
+
+    private String orderAndWaitForErrorMessage() {
         driver.findElement(orderButton).click();
         By errorList = By.cssSelector("ul.woocommerce-error");
         return wait.until(ExpectedConditions.presenceOfElementLocated(errorList)).getText();
     }
 
-    private String getPolishMonth(int numberOfMonth){
+    private String getPolishMonth(int numberOfMonth) {
         String[] monthNames = {"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
                 "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"};
         return monthNames[numberOfMonth];
     }
-    private void goToMyAccountOrders(){
+
+    private void goToMyAccountOrders() {
         driver.findElement(By.cssSelector("#menu-menu>.my-account")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".woocommerce-MyAccount-navigation-link--orders"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".woocommerce-MyAccount-orders")));
     }
 
-    private void fillOutCheckoutForm(String email){
+    private void fillOutCheckoutForm(String email) {
         fillOutCheckoutForm(email, "6666666");
     }
 
-    private void fillOutCheckoutForm(String email, String phone){
+    private void fillOutCheckoutForm(String email, String phone) {
         wait.until(ExpectedConditions.elementToBeClickable(firstNameField)).sendKeys("my");
         wait.until(ExpectedConditions.elementToBeClickable(lastNameField)).sendKeys("name");
         wait.until(ExpectedConditions.elementToBeClickable(countryCodeArrow)).click();
@@ -286,7 +295,7 @@ public class PaymentTests {
         wait.until(ExpectedConditions.elementToBeClickable(emailField)).sendKeys(email);
     }
 
-    private void fillOutCardData(boolean acceptTerms){
+    private void fillOutCardData(boolean acceptTerms) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingIcon));
         WebElement cardNumberElement = findElementInFrame(cardNumberFrame, cardNumberField);
 
@@ -294,9 +303,9 @@ public class PaymentTests {
         WebElement expirationDateElement = findElementInFrame(expirationDateFrame, expirationDateField);
         slowType(expirationDateElement, "0530");
         WebElement cvcElement = findElementInFrame(cvcFrame, cvcField);
-        slowType(cvcElement,"123");
+        slowType(cvcElement, "123");
         driver.switchTo().defaultContent();
-        if (acceptTerms){
+        if (acceptTerms) {
             driver.findElement(By.cssSelector("#terms")).click();
         }
     }
