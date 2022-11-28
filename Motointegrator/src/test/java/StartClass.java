@@ -34,10 +34,6 @@ public class StartClass {
     @AfterEach
     void closeContext(){
         context.close();
-    }
-
-    public String passToAccount(){
-        String password = "Moje!bardzo@mocne#haslo";
-        return password;
+    
     }
 }
