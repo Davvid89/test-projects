@@ -35,5 +35,4 @@ public class StartClass {
     void closeContext(){
         context.close();
     }
-    }
 }
