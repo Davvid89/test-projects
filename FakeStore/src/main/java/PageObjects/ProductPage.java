@@ -8,11 +8,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class ProductPage {
-    private WebDriver driver;
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(7));
+public class ProductPage extends BasePage {
+    public HeaderPage header;
+    public DemoFooterPage demoNotice;
+    private WebDriverWait wait;
     public ProductPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
+        header = new HeaderPage(driver);
+        demoNotice = new DemoFooterPage(driver);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(8));
     }
 
     private By addToCartButtonLocator = By.cssSelector("button[name='add-to-cart']");
@@ -21,14 +25,14 @@ public class ProductPage {
 
     public ProductPage goTo(String productURL) {
         driver.navigate().to(productURL);
-        return new ProductPage(driver);
+        return this;
     }
 
     public ProductPage addToCart() {
         WebElement addButton = driver.findElement(addToCartButtonLocator);
         addButton.click();
         wait.until(ExpectedConditions.elementToBeClickable(viewCartButtonLocator));
-        return new ProductPage(driver);
+        return this;
     }
 
     public CartPage viewCart() {

@@ -2,69 +2,82 @@ package POMTests;
 
 import PageObjects.CategoryPage;
 import PageObjects.ProductPage;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CartTestPOM {
+public class CartTestPOM extends BaseTest {
 
-    WebDriver driver;
-    WebDriverWait wait;
     String productId = "386";
     String productURL = "https://fakestore.testelka.pl/product/egipt-el-gouna/";
     String categoryURL = "https://fakestore.testelka.pl/product-category/windsurfing/";
-
-    @BeforeEach
-    public void testSetUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        driver.navigate().to("https://fakestore.testelka.pl");
-        driver.manage().window().maximize();
-        driver.findElement(By.cssSelector(".woocommerce-store-notice__dismiss-link")).click();
-    }
+    String[] productPages = {"/egipt-el-gouna/", "/wspinaczka-via-ferraty/", "/wspinaczka-island-peak/",
+            "/fuerteventura-sotavento/", "/grecja-limnos/", "/windsurfing-w-karpathos/",
+            "/wyspy-zielonego-przyladka-sal/", "/wakacje-z-yoga-w-kraju-kwitnacej-wisni/",
+            "/wczasy-relaksacyjne-z-yoga-w-toskanii/", "/yoga-i-pilates-w-hiszpanii/"};
 
     @Test
     public void addToCartFromProductPageTest() {
-        ProductPage productPage = new ProductPage(driver);
-        int productAmount = productPage.goTo(productURL).addToCart().viewCart().getProductsAmount(productId);
+        ProductPage productPage = new ProductPage(driver).goTo(productURL);
+        productPage.demoNotice.close();
+        boolean isProductInCart = productPage.addToCart().viewCart().isProductInCart(productId);
 
-        assertTrue(productAmount == 1,
-                "Remove button was not found for a product with id=386 (Egipt - El Gouna). " +
+        assertTrue(isProductInCart,
+                "Remove button was not found for a product with id=" + productId + " . " +
                         "Was the product added to cart?");
     }
 
     @Test
     public void addToCartFromCategoryPageTest() {
-        CategoryPage categoryPage = new CategoryPage(driver);
-        int productAmount = categoryPage.goTo(categoryURL).addtoCart(productId).viewCart().getProductsAmount(productId);
-        assertTrue(productAmount == 1,
-                "Remove button was not found for a product with id=386 (Egipt - El Gouna). " +
-                        "Was the product added to cart?");
+        CategoryPage categoryPage = new CategoryPage(driver).goTo(categoryURL);
+        categoryPage.demoNotice.close();
+        boolean isProductInCart = categoryPage.addToCart(productId).viewCart().isProductInCart(productId);
+        assertTrue(isProductInCart,
+                "Remove button was not found for a product with id=" + productId + " . " + "Was the product added to cart?");
     }
 
     @Test
     public void addOneProductTenTimesTest() {
-        ProductPage productPage = new ProductPage(driver);
-        int productQuantity = productPage.goTo(productURL).addToCart(10).viewCart().getProductQuantity();
+        ProductPage productPage = new ProductPage(driver).goTo(productURL);
+        productPage.demoNotice.close();
+        int productQuantity = productPage.addToCart(10).viewCart().getProductQuantity();
 
         assertEquals(10, productQuantity,
                 "Quantity of the product is not what expected. Expected: 10, but was " + productQuantity);
     }
 
-    @AfterEach
-    public void closeDriver() {
-        driver.quit();
+    @Test
+    public void addTenProductsToCartTest() {
+        ProductPage productPage = new ProductPage(driver);
+        for (String product : productPages) {
+            productPage.goTo("https://fakestore.testelka.pl/product" + product).addToCart();
+        }
+        int numberOfItems = productPage.header.viewCart().getNumberOfProducts();
+
+        assertEquals(10, numberOfItems,
+                "Number of items in the cart is not correct. Expected: 10, but was: " + numberOfItems);
+    }
+
+    @Test
+    public void changeNumberOfProductsTest() {
+        ProductPage productPage = new ProductPage(driver).goTo("https://fakestore.testelka.pl/product/egipt-el-gouna/");
+        productPage.demoNotice.close();
+        int quantity = productPage.addToCart().viewCart().changeQuantity(8).updateCart().getProductQuantity();
+        assertEquals(8, quantity,
+                "Quantity of the product is not what expected. Expected: 8, but was " + quantity);
+    }
+
+    @Test
+    public void removePositionFromCartTest() {
+        ProductPage productPage = new ProductPage(driver).goTo("https://fakestore.testelka.pl/product/egipt-el-gouna/");
+        productPage.demoNotice.close();
+        boolean isCartEmpty = productPage.addToCart().viewCart().removeProduct(productId).isCartEmpty();
+
+        assertTrue(isCartEmpty,
+                "Cart is not emptyy after removing the product");
     }
 }
